@@ -24,7 +24,11 @@ let comments = [
 app.post('/comments', (req, res) => {
     const comment = req.body.comment;
     comments.push(comment);
-    res.redirect('/comments');
+    if (req.session.user) {
+        res.redirect(`/user/${req.session.user.id}`);
+    } else {
+        res.redirect('/');
+    }
 });
 
 
@@ -46,6 +50,7 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    console.log(email, password);
     const user = users.find((user) => user.email === email && user.password === password);
     if (user) {
         req.session.user = user;
